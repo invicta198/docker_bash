@@ -44,6 +44,7 @@ function management_pull(){
 	echo 'Pulling Management repo !...'
 	cd touchstone-management-portal
 	github_pull
+
 }
 function engine_pull(){
 	echo 'Pulling Engine repo !...'
@@ -51,40 +52,38 @@ function engine_pull(){
 	github_pull
 }
 function github_pull(){
-	output=`git checkout master 2>&1 `
-	#echo $output
-	if [[ $output == *'Please commit your changes or stash them before you switch branches.'* ]]; then
-  		output_second='git branch 2>&1 '
-  		echo $output_second
+	command=`git checkout master 2>&1 `
+	if [[ $command == *'Please commit your changes or stash them before you switch branches.'* ]]; then
+  		user_git_branch=`git rev-parse --abbrev-ref HEAD 2>&1 ` #Git 1.6.3 or newer.
+  		echo 'You are on branch: '$user_git_branch
+  		echo 'Press Y: stash and apply || Press N: stash and drop'
+  		read user_option
+  		command=`git stash 2>&1 `
+  		command=`git checkout master 2>&1 `
+  		command=`git pull 2>&1 `
+  		command=`git checkout $user_git_branch 2>&1 `
+  		if [ "$user_option" = "Y" ] || [ "$user_option" = "y" ]; then
+  			command=`git stash apply 2>&1 `
+  		elif [ "$user_option" = "N" ] || [ "$user_option" = "n" ]; then
+  			command=`git stash drop 2>&1 `
+  		else
+  			command=`exit 1 2>&1 `
+  		fi 
 	else
+		command=`git pull 2>&1 `
 		echo '############## Success !!......'
 	fi
-	#git pull
-	# while read -r line; do
-	# 	echo $line
-	# done <<< "$output"
-	#echo '############## Success !!......'
 	cd -
-}
-function check(){
-	#output=$(git status)
-	errormessage=`git status -n -v hfsplus 2>&1 `
-	#echo $errormessage
-	# while read -r line; do
-	# 	echo "###########"
- 	#   echo "$line"
-	# done <<< "$output"
 }
 
 cd ~/voereir/code
-#agent_pull
-#api_pull
-#cli_pull
-#common_pull
-#doc_pull
+agent_pull
+api_pull
+cli_pull
+common_pull
+doc_pull
 engine_pull
-#externals_pull
-#management_pull
-#package_pull
-#web_pull
-#check
+externals_pull
+management_pull
+package_pull
+web_pull
