@@ -4,11 +4,19 @@ function common_pull(){
 	echo 'Pulling Common repo !...'
 	cd touchstone-common
 	github_pull
+	source ~/voereir/code/ts-venv/bin/activate
+	cd touchstone-common/touchstone_common/db/migration
+	command=`alembic downgrade -1 2>&1 `
+	command=`alembic upgrade +1 2>&1 `
+	cd -
+	deactivate
 }
 function agent_pull(){
 	echo 'Pulling Agent repo !...'
 	cd touchstone-agent-webservice
 	github_pull
+	source touchstone-agent-webservice/server/venv3/bin/activate
+	deactivate
 }
 function package_pull(){
 	echo 'Pulling Package repo !...'
@@ -18,7 +26,7 @@ function package_pull(){
 function api_pull(){
 	echo 'Pulling Api repo !...'
 	cd touchstone-api
-	github_pull
+	github_pull	
 }
 function doc_pull(){
 	echo 'Pulling Doc repo !...'
@@ -29,6 +37,7 @@ function web_pull(){
 	echo 'Pulling Web repo !...'
 	cd touchstone-web
 	github_pull
+	command=`bash touchstone-web/webpack/pack-webpack.cmd 2>&1 `
 }
 function cli_pull(){
 	echo 'Pulling CLI repo !...'
@@ -44,7 +53,12 @@ function management_pull(){
 	echo 'Pulling Management repo !...'
 	cd touchstone-management-portal
 	github_pull
-
+	source ~/voereir/code/ts-venv/bin/activate
+	cd touchstone-management-portal/touchstone_management_portal/common/db/migration
+	command=`alembic downgrade -1 2>&1 `
+	command=`alembic upgrade +1 2>&1 `
+	cd -
+	deactivate
 }
 function engine_pull(){
 	echo 'Pulling Engine repo !...'
