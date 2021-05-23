@@ -1,8 +1,16 @@
 #!/bin/bash
 
+function delete_cache(){
+	echo 'Deleting __pycache__ !...'
+	cd $1
+	command=`rm -rf $(find $2 -name __pycache__) 2>&1 `
+	cd -
+}
 function common_pull(){
 	echo 'Pulling Common repo !...'
-	cd touchstone-common
+	repo=touchstone-common
+	delete_cache $repo touchstone_common
+	cd $repo
 	github_pull
 	source ~/voereir/code/ts-venv/bin/activate
 	cd touchstone-common/touchstone_common/db/migration
@@ -13,45 +21,61 @@ function common_pull(){
 }
 function agent_pull(){
 	echo 'Pulling Agent repo !...'
-	cd touchstone-agent-webservice
+	repo=touchstone-agent-webservice
+	delete_cache $repo .
+	cd $repo
 	github_pull
 	source touchstone-agent-webservice/server/venv3/bin/activate
 	deactivate
 }
 function package_pull(){
 	echo 'Pulling Package repo !...'
-	cd touchstone-package
+	repo=touchstone-package
+	delete_cache $repo .
+	cd $repo
 	github_pull
 }
 function api_pull(){
 	echo 'Pulling Api repo !...'
-	cd touchstone-api
+	repo=touchstone-api
+	delete_cache $repo touchstoneApi
+	cd $repo
 	github_pull	
 }
 function doc_pull(){
 	echo 'Pulling Doc repo !...'
-	cd touchstone-doc
+	repo=touchstone-doc
+	delete_cache $repo .
+	cd $repo
 	github_pull
 }
 function web_pull(){
 	echo 'Pulling Web repo !...'
-	cd touchstone-web
+	repo=touchstone-web
+	delete_cache $repo .
+	cd $repo
 	github_pull
 	command=`bash touchstone-web/webpack/pack-webpack.cmd 2>&1 `
 }
 function cli_pull(){
 	echo 'Pulling CLI repo !...'
-	cd touchstone-CLI
+	repo=touchstone-CLI
+	delete_cache $repo touchstone_cli
+	cd $repo
 	github_pull
 }
 function externals_pull(){
 	echo 'Pulling Externals repo !...'
-	cd touchstone-externals
+	repo=touchstone-externals
+	delete_cache $repo touchstone
+	cd $repo
 	github_pull
 }
 function management_pull(){
 	echo 'Pulling Management repo !...'
-	cd touchstone-management-portal
+	repo=touchstone-management-portal
+	delete_cache $repo touchstone_management_portal
+	cd $repo
 	github_pull
 	source ~/voereir/code/ts-venv/bin/activate
 	cd touchstone-management-portal/touchstone_management_portal/common/db/migration
@@ -62,7 +86,9 @@ function management_pull(){
 }
 function engine_pull(){
 	echo 'Pulling Engine repo !...'
-	cd touchstone-engine
+	repo=touchstone-engine
+	delete_cache $repo ve_engines
+	cd $repo
 	github_pull
 }
 function github_pull(){
